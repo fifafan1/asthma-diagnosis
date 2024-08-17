@@ -7,11 +7,11 @@ from sklearn.preprocessing import StandardScaler
 def drop_columns(df, columns_to_drop):
     """
     Drops specified columns from the DataFrame.
-    
+
     Parameters:
     df (pd.DataFrame): The input DataFrame.
     columns_to_drop (list): List of columns to drop.
-    
+
     Returns:
     pd.DataFrame: DataFrame with specified columns removed.
     """
@@ -20,11 +20,11 @@ def drop_columns(df, columns_to_drop):
 def standardize_columns(df, columns_to_standardize):
     """
     Standardizes specified numerical columns using StandardScaler.
-    
+
     Parameters:
     df (pd.DataFrame): The input DataFrame.
     columns_to_standardize (list): List of numerical columns to standardize.
-    
+
     Returns:
     pd.DataFrame: DataFrame with standardized columns.
     """
@@ -35,10 +35,10 @@ def standardize_columns(df, columns_to_standardize):
 def check_missing_values(df):
     """
     Checks for missing values in the DataFrame.
-    
+
     Parameters:
     df (pd.DataFrame): The input DataFrame.
-    
+
     Returns:
     pd.Series: Series containing the count of missing values for each column.
     """
@@ -47,16 +47,16 @@ def check_missing_values(df):
 def preprocess_data(df):
     """
     A pipeline function that applies a series of preprocessing steps.
-    
+
     Parameters:
     df (pd.DataFrame): The input DataFrame.
-    
+
     Returns:
     pd.DataFrame: Preprocessed DataFrame.
     """
     # Example pipeline
     df = drop_columns(df, ['patient_id'])
-    numerical_cols = ['age', 'bmi', 'physical_activity', 'diet_quality', 
+    numerical_cols = ['age', 'bmi', 'physical_activity', 'diet_quality',
                       'sleep_quality', 'lung_function_fev1', 'lung_function_fvc']
     df = standardize_columns(df, numerical_cols)
     missing_values = check_missing_values(df)
