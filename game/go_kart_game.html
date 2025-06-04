@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Go Kart Game</title>
+<style>
+  body { margin:0; background:#000; overflow:hidden; }
+  canvas { display:block; margin:0 auto; background:#0a0; }
+</style>
+</head>
+<body>
+<canvas id="game" width="800" height="600"></canvas>
+<script>
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+const WIDTH = canvas.width;
+const HEIGHT = canvas.height;
+const ACCELERATION = 0.2;
+const FRICTION = 0.05;
+const ROTATION_SPEED = 3 * Math.PI / 180; // radians per frame
+const MAX_SPEED = 5;
+
+class Kart {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.angle = 0; // radians
+    this.speed = 0;
+  }
+  accelerate(forward=true) {
+    const delta = forward ? ACCELERATION : -ACCELERATION;
+    this.speed = Math.max(-MAX_SPEED, Math.min(MAX_SPEED, this.speed + delta));
+  }
+  rotate(direction) { // +1 left, -1 right
+    this.angle += ROTATION_SPEED * direction;
+  }
+  update() {
+    this.x += this.speed * Math.cos(this.angle);
+    this.y += this.speed * Math.sin(this.angle);
+    this.speed *= (1 - FRICTION);
+  }
+  draw(ctx) {
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.angle);
+    ctx.fillStyle = 'red';
+    ctx.beginPath();
+    ctx.moveTo(-25, -15);
+    ctx.lineTo(25, 0);
+    ctx.lineTo(-25, 15);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+const kart = new Kart(WIDTH / 2, HEIGHT / 2);
+const keys = {};
+document.addEventListener('keydown', e => keys[e.key] = true);
+document.addEventListener('keyup', e => keys[e.key] = false);
+
+function drawTrack() {
+  ctx.fillStyle = 'grey';
+  ctx.fillRect(50, 50, WIDTH - 100, HEIGHT - 100);
+  ctx.fillStyle = 'green';
+  ctx.fillRect(200, 150, WIDTH - 400, HEIGHT - 300);
+}
+
+function loop() {
+  if (keys['ArrowUp']) kart.accelerate(true);
+  if (keys['ArrowDown']) kart.accelerate(false);
+  if (keys['ArrowLeft']) kart.rotate(-1); // canvas y increases downward
+  if (keys['ArrowRight']) kart.rotate(1);
+
+  kart.update();
+  ctx.fillStyle = 'green';
+  ctx.fillRect(0, 0, WIDTH, HEIGHT);
+  drawTrack();
+  kart.draw(ctx);
+  requestAnimationFrame(loop);
+}
+
+loop();
+</script>
+</body>
+</html>
